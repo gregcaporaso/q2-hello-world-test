@@ -7,17 +7,44 @@ on:
     branches: ["main"]
 
 jobs:
-  build-and-test:
-    runs-on: ubuntu-latest
+  build-and-test-qiime2-tiny-2024-5:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-13]
 
     steps:
     - uses: actions/checkout@v2
 
     - name: Set up Conda
-      uses: conda-incubator/setup-miniconda@v2
+      uses: conda-incubator/setup-miniconda@v3
       with:
         activate-environment: q2-hello-world-qiime2-tiny-2024.5
         environment-file: environments/q2-hello-world-qiime2-tiny-2024.5.yml
+        auto-activate-base: false
+
+    - name: Install plugin
+      shell: bash -l {0}
+      run: make install
+
+    - name: Run tests
+      shell: bash -l {0}
+      run: make test
+
+  build-and-test-qiime2-tiny-2024-2:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-13]
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Conda
+      uses: conda-incubator/setup-miniconda@v3
+      with:
+        activate-environment: q2-hello-world-qiime2-tiny-2024.2
+        environment-file: environments/q2-hello-world-qiime2-tiny-2024.2.yml
         auto-activate-base: false
 
     - name: Install plugin
